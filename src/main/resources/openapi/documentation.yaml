@@ -1,0 +1,243 @@
+openapi: "3.0.3"
+info:
+  title: "ktor_interview API"
+  description: "ktor_interview API"
+  version: "1.0.0"
+servers:
+- url: "https://ktor_interview"
+paths:
+  /interview:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/InterviewDTO"
+    post:
+      description: "this is creating above routing"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+          headers:
+            My-User-Id-Header:
+              required: true
+              schema:
+                type: "string"
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          headers:
+            My-User-Id-Header:
+              required: true
+              schema:
+                type: "string"
+  /interviews:
+    get:
+      description: "Get all interviews"
+      parameters:
+      - name: "sort"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/InterviewDTO"
+    post:
+      description: "Create interview from json\n    @Parameter (Interview)"
+      parameters:
+      - name: "sort"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+          headers:
+            My-User-Id-Header:
+              required: true
+              schema:
+                type: "string"
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          headers:
+            My-User-Id-Header:
+              required: true
+              schema:
+                type: "string"
+  /interviews/{id}:
+    get:
+      description: "Get interview by String ID"
+      parameters:
+      - name: "sort"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "parent"
+        in: "query"
+        required: false
+        schema:
+          type: "object"
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /interviews/{id}/edit:
+    put:
+      description: "Update\n    {\n        orderQuestions,\n        questions\n  \
+        \  }"
+      parameters:
+      - name: "sort"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "parent"
+        in: "query"
+        required: false
+        schema:
+          type: "object"
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      - name: "parent"
+        in: "query"
+        required: true
+        schema:
+          type: "object"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Interview updated"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /person:
+    post:
+      description: ""
+      responses:
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+          headers:
+            My-User-Id-Header:
+              required: true
+              schema:
+                type: "string"
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          headers:
+            My-User-Id-Header:
+              required: true
+              schema:
+                type: "string"
+components:
+  schemas:
+    Answer:
+      type: "object"
+      properties:
+        text:
+          type: "string"
+        id:
+          type: "string"
+    Question:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        question:
+          type: "string"
+        answers:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Answer"
+        answerOrder:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int32"
+    InterviewDTO:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        creatorName:
+          type: "string"
+        questions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Question"
+    ErrorResponse:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+    Unit:
+      type: "object"
+      properties: {}

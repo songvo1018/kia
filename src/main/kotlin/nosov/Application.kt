@@ -1,28 +1,27 @@
 package nosov
 
-import com.example.routes.customerRouting
-//import io.bkbn.kompendium.core.plugin.NotarizedApplication
-//import io.bkbn.kompendium.json.schema.KotlinXSchemaConfigurator
-//import io.bkbn.kompendium.oas.OpenApiSpec
-//import io.bkbn.kompendium.oas.info.Contact
-//import io.bkbn.kompendium.oas.info.Info
-//import io.bkbn.kompendium.oas.info.License
-//import io.bkbn.kompendium.oas.server.Server
 import io.ktor.http.*
+import io.ktor.resources.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.application.install
+import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.jetty.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.*
+import io.ktor.server.plugins.cors.CORS
+import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.openapi.*
+import io.ktor.server.resources.Resources
+import io.ktor.server.plugins.swagger.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import nosov.models.ErrorResponse
 import nosov.models.PersonDto
 import nosov.plugins.configureSecurity
+import nosov.resources.interview
 import nosov.routes.interviewRouting
-import java.net.URI
 
 fun main() {
     embeddedServer(Jetty, port = 8080, host = "0.0.0.0", module = Application::module)
@@ -30,14 +29,35 @@ fun main() {
 }
 
 fun Application.module() {
+
+    configureResources()
+    configureCors()
     configureSecurity()
     configureRouting()
     configureSerialization()
 }
 
+fun Application.configureResources() {
+    install(Resources)
+    routing {
+        swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
+        interview()
+    }
+}
+
+fun Application.configureCors() {
+    install(CORS) {
+        anyHost()
+        allowHeader(HttpHeaders.ContentType)
+    }
+}
+
 fun Application.configureRouting() {
+
     val service = PersonService()
     routing {
+//        openAPI(path="openapi", swaggerFile = "openapi/documentation.yaml")
+        swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
         route("/person") {
             post {
                 val request = call.receive<PersonDto>()
@@ -49,11 +69,8 @@ fun Application.configureRouting() {
                     } ?: call.respond(HttpStatusCode.BadRequest, ErrorResponse.BAD_REQUEST_RESPONSE)
             }
         }
-        get("/api") {
-            call.respondRedirect("/swagger-ui/index.html?url=/static/test.json", true)
-        }
         interviewRouting()
-        customerRouting()
+//        customerRouting()
     }
 }
 
