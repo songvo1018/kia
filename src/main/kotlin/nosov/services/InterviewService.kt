@@ -12,14 +12,11 @@ class InterviewService {
     private val database = client.getDatabase("interview")
     private val interviewCollection = database.getCollection<Interview>()
 
-    @Operation(method = "POST", description = "Uses for creating Interview")
     fun create(input: InterviewDTO): Id<Interview>? {
         val interviewFromInput = input.toInterview()
         interviewCollection.insertOne(interviewFromInput)
         return interviewFromInput.id
     }
-
-
 
     fun Interview.setStatus(status: InterviewStatus) {
         this.status = status

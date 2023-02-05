@@ -2,6 +2,7 @@
 docker run --name my_mongodb_cotainer -d -p 27017:27017 mongo:5.0.6
 
 guide on https://codersee.com/a-guide-to-ktor-with-mongodb/
+type-safed route https://ktor.io/docs/type-safe-routing.html
 
 generate doc:
 - set cursor on ``embededServer`` in ``Application.kt``
@@ -12,3 +13,4 @@ generate doc:
 
 todo:
 - documentation generator for ktor https://bkbn.gitbook.io/kompendium/
+- tune logger
