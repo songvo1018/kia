@@ -21,48 +21,15 @@ import io.ktor.server.routing.*
 import nosov.models.ErrorResponse
 import nosov.models.PersonDto
 import nosov.plugins.configureSecurity
+import nosov.routes.interviewRouting
 import java.net.URI
 
 fun main() {
-
     embeddedServer(Jetty, port = 8080, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 
 fun Application.module() {
-//    install(NotarizedApplication()) {
-//        spec = OpenApiSpec(
-//            info = Info(
-//                title = "Simple Demo API",
-//                version = "1.33.7",
-//                description = "Wow isn't this cool?",
-//                termsOfService = URI("https://example.com"),
-//                contact = Contact(
-//                    name = "Homer Simpson",
-//                    email = "chunkylover53@aol.com",
-//                    url = URI("https://gph.is/1NPUDiM")
-//                ),
-//                license = License(
-//                    name = "MIT",
-//                    url = URI("https://github.com/bkbnio/kompendium/blob/main/LICENSE")
-//                )
-//            ),
-//            servers = mutableListOf(
-//                Server(
-//                    url = URI("https://myawesomeapi.com"),
-//                    description = "Production instance of my API"
-//                ),
-//                Server(
-//                    url = URI("https://staging.myawesomeapi.com"),
-//                    description = "Where the fun stuff happens"
-//                )
-//            )
-//        )
-//        // Adds support for @Transient and @SerialName
-//        // If you are not using them this is not required.
-//        schemaConfigurator = KotlinXSchemaConfigurator()
-//    }
-
     configureSecurity()
     configureRouting()
     configureSerialization()
@@ -85,6 +52,7 @@ fun Application.configureRouting() {
         get("/api") {
             call.respondRedirect("/swagger-ui/index.html?url=/static/test.json", true)
         }
+        interviewRouting()
         customerRouting()
     }
 }

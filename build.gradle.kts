@@ -45,4 +45,5 @@ dependencies {
 //    implementation("io.github.smiley4:ktor-swagger-ui:1.1.0")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("io.ktor:ktor-server-test-host-jvm:2.2.2")
 }
