@@ -8,7 +8,8 @@ fun Interview.toDto(): InterviewDTO =
     InterviewDTO(
         id = this.id.toString(),
         creatorName = this.creatorName,
-        questions = this.questions
+        questions = this.questions,
+        orderQuestions = this.orderQuestions
     )
 
 fun InterviewDTO.toInterview(): Interview =

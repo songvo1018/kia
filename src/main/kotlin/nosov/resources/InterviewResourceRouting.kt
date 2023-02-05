@@ -10,9 +10,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import nosov.extentions.toDto
 import nosov.extentions.toInterview
-import nosov.models.ErrorResponse
-import nosov.models.Interview
-import nosov.models.InterviewDTO
+import nosov.models.*
 import nosov.services.InterviewService
 
 fun Routing.interview() {
@@ -47,11 +45,7 @@ fun Routing.interview() {
     }
 
     /*
-    Update
-    {
-        orderQuestions,
-        questions
-    }
+    Update {orderQuestions, questions}
      */
     put<Interviews.Id.Edit> { attribute ->
         service.findById(attribute.parent.id)
@@ -59,6 +53,47 @@ fun Routing.interview() {
                 val interviewWithUpdates = call.receive<InterviewDTO>()
                 if (service.update(attribute.parent.id, interviewWithUpdates.toInterview()))
                     call.respond(HttpStatusCode.OK, "Interview updated")
+                else
+                    call.respond(HttpStatusCode.InternalServerError, ErrorResponse.INTERNAL_SERVER_ERROR)
+            }
+            ?: call.respond(HttpStatusCode.NotFound, ErrorResponse.NOT_FOUND_RESPONSE)
+    }
+
+    /*
+    Update interview: add new question to exist interview. Also adds the index of the new question to the orderQuestion property
+     */
+    put<Interviews.Id.AddQuestion> { attribute ->
+        service.findById(attribute.parent.id)
+            ?.let {
+                val questionToAdd = call.receive<Question>()
+                if (service.addNewQuestionToInterview(attribute.parent.id, questionToAdd))
+                    call.respond(HttpStatusCode.OK, "Question added")
+                else
+                  call.respond(HttpStatusCode.InternalServerError, ErrorResponse.INTERNAL_SERVER_ERROR)
+            }
+            ?: call.respond(HttpStatusCode.NotFound, ErrorResponse.NOT_FOUND_RESPONSE)
+    }
+
+    /*
+    Get order data from exist interview
+     */
+    get<Interviews.Id.Order> { attribute ->
+        service.findById(attribute.parent.id)
+            ?.let { interview ->
+                call.respond(InterviewOrderDTO(interview.orderQuestions, interview.questions.size))
+            }
+            ?: call.respond(HttpStatusCode.NotFound, ErrorResponse.NOT_FOUND_RESPONSE)
+    }
+
+    /*
+    Update order data to exist interview
+     */
+    put<Interviews.Id.Order> { attribute ->
+        service.findById(attribute.parent.id)
+            ?.let { interview ->
+                val newOrderData = call.receive<InterviewOrderDTO>()
+                if (service.updateOrderData(interview, newOrderData))
+                    call.respond(HttpStatusCode.OK, "Order updated")
                 else
                     call.respond(HttpStatusCode.InternalServerError, ErrorResponse.INTERNAL_SERVER_ERROR)
             }

@@ -12,5 +12,11 @@ class Interviews (val sort: String? = "new") {
     class Id(val parent: Interviews = Interviews(), val id: String) {
         @Resource("edit")
         class Edit(val parent: Id)
+
+        @Resource("question")
+        class AddQuestion(val parent: Id)
+
+        @Resource("order")
+        class Order(val parent: Id)
     }
 }

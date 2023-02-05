@@ -13,12 +13,20 @@ import nosov.services.InterviewService
 
 fun Route.interviewRouting() {
     val service = InterviewService()
+    /*
+    @Deprecated endpoint nodes
+     */
     route("/interview") {
+        /*
+        @Deprecated endpoint
+         */
         get {
             call.respond(service.getAll().map(Interview::toDto))
         }
 
-//        this is creating above routing
+        /*
+        @Deprecated endpoint
+         */
         post {
             service.create(call.receive())
                 ?.let { userId ->

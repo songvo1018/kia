@@ -1,6 +1,7 @@
 package nosov.services
 
 import io.swagger.v3.oas.annotations.Operation
+import jdk.jfr.internal.EventWriter
 import nosov.extentions.toInterview
 import nosov.models.*
 import org.bson.types.ObjectId
@@ -22,7 +23,7 @@ class InterviewService {
         this.status = status
     }
 
-    fun getAll() : List<Interview> {
+    fun getAll(): List<Interview> {
         return interviewCollection.find().toList()
     }
 
@@ -40,5 +41,26 @@ class InterviewService {
                 )
                 updateResult.modifiedCount == 1L
             } ?: false
+    }
+
+    fun addNewQuestionToInterview(iterviewId: String, question: Question): Boolean {
+        return findById(iterviewId)
+            ?.let { interview ->
+                val questions = interview.questions.toMutableList()
+                questions.add(question)
+                val orderQuestions = interview.orderQuestions?.toMutableList()
+                orderQuestions?.add(questions.size)
+                val updateResult = interviewCollection.replaceOne(
+                    interview.copy(orderQuestions = orderQuestions, questions = questions)
+                )
+                updateResult.modifiedCount == 1L
+            } == true
+    }
+
+    fun updateOrderData(interview: Interview, newOrderData: InterviewOrderDTO): Boolean {
+        val updateResult = interviewCollection.replaceOne(
+            interview.copy(orderQuestions = newOrderData.orderQuestions)
+        )
+        return updateResult.modifiedCount == 1L
     }
 }

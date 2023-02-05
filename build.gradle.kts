@@ -39,6 +39,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     implementation("io.ktor:ktor-server-resources:$ktor_version")
+    implementation("io.ktor:ktor-server-html-builder:$ktor_version")
     implementation("org.litote.kmongo:kmongo:$kmongo_version")
     implementation("io.ktor:ktor-server-openapi:$ktor_version")
     implementation("io.ktor:ktor-server-swagger:$ktor_version")

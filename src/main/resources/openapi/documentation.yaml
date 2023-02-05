@@ -8,7 +8,7 @@ servers:
 paths:
   /interview:
     get:
-      description: ""
+      description: "@Deprecated endpoint"
       responses:
         "200":
           description: "OK"
@@ -19,7 +19,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/InterviewDTO"
     post:
-      description: "this is creating above routing"
+      description: "@Deprecated endpoint"
       responses:
         "201":
           description: "Created"
@@ -126,8 +126,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
   /interviews/{id}/edit:
     put:
-      description: "Update\n    {\n        orderQuestions,\n        questions\n  \
-        \  }"
+      description: "Update {orderQuestions, questions}"
       parameters:
       - name: "sort"
         in: "query"
@@ -159,6 +158,135 @@ paths:
               examples:
                 Example#1:
                   value: "Interview updated"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /interviews/{id}/order:
+    get:
+      description: "Get order data from exist interview"
+      parameters:
+      - name: "sort"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "parent"
+        in: "query"
+        required: false
+        schema:
+          type: "object"
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      - name: "parent"
+        in: "query"
+        required: true
+        schema:
+          type: "object"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/InterviewOrderDTO"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      description: "Update order data to exist interview"
+      parameters:
+      - name: "sort"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "parent"
+        in: "query"
+        required: false
+        schema:
+          type: "object"
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      - name: "parent"
+        in: "query"
+        required: true
+        schema:
+          type: "object"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Order updated"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /interviews/{id}/question:
+    put:
+      description: "Update interview: add new question to exist interview. Also adds\
+        \ the index of the new question to the orderQuestion property"
+      parameters:
+      - name: "sort"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "parent"
+        in: "query"
+        required: false
+        schema:
+          type: "object"
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      - name: "parent"
+        in: "query"
+        required: true
+        schema:
+          type: "object"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Question added"
         "500":
           description: "Internal Server Error"
           content:
@@ -233,6 +361,11 @@ components:
           type: "array"
           items:
             $ref: "#/components/schemas/Question"
+        orderQuestions:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int32"
     ErrorResponse:
       type: "object"
       properties:
@@ -241,3 +374,14 @@ components:
     Unit:
       type: "object"
       properties: {}
+    InterviewOrderDTO:
+      type: "object"
+      properties:
+        orderQuestions:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int32"
+        size:
+          type: "integer"
+          format: "int32"
